@@ -1,0 +1,46 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  info_console:
+    format: '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+  error_console:
+    format: '%(asctime)s - %(levelname)s - %(name)s - %(funcName)s - %(lineno)d - %(threadName)s - %(message)s - %(created)f'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+  file:
+    class: logmodule.custom_formatter.JsonFormatter
+    datefmt: '%Y-%m-%d %H:%M:%S'
+
+filters:
+  error_filter:
+    class: logmodule.custom_filter.ErrorFilter
+
+handlers:
+  info_console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: info_console
+    stream: ext://sys.stdout
+  error_console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: error_console
+    filters: 
+      - error_filter
+    stream: ext://sys.stderr
+  file:
+    class: logging.FileHandler
+    level: ERROR
+    formatter: file
+    filename: application.log
+
+
+loggers:
+  debug:
+    level: DEBUG
+    handlers: [info_console, error_console]
+    propagate: true
+root:
+  level: INFO
+  handlers: [info_console, error_console, file]
